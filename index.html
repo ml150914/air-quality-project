@@ -10,7 +10,7 @@
   <div id="plot" style="width: 90%; height: 600px; margin: auto;"></div>
 
   <script>
-    // ✅ MODIFICA QUI IL NOME DEL FILE (può essere anche dinamico)
+    //  MODIFICA QUI IL NOME DEL FILE (può essere anche dinamico)
     const filename = '2025-08-27.csv';
 
     fetch(filename)
@@ -20,19 +20,18 @@
         }
         return response.text();
       })
-      .then(data => {
-        const rows = data.trim().split('\n');
-        const headers = rows[0].split(',');
-
+      .then(csv => {
+        const lines = csv.trim().split('\n');
+        
         // Assumiamo intestazioni: timestamp,temperature,humidity,pressure,pm1.0,pm2.5,pm10
         const time = [], temp = [], hum = [], pm25 = [];
 
-        for (let i = 1; i < rows.length; i++) {
-          const cols = rows[i].split(',');
-          time.push(cols[0]);
-          temp.push(parseFloat(cols[1]));
-          hum.push(parseFloat(cols[2]));
-          pm25.push(parseFloat(cols[5]));
+        for (let i = 1; i < lines.length; i++) {
+          const [timestamp, temperature, humidity, , , pm_2_5] = lines[i].split(',');
+          time.push(timestamp);
+          temp.push(parseFloat(temperature));
+          hum.push(parseFloat(humidity));
+          pm25.push(parseFloat(pm_2_5));
         }
 
         const traces = [
