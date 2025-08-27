@@ -12,6 +12,8 @@
   <script>
     //  MODIFICA QUI IL NOME DEL FILE (può essere anche dinamico)
     const filename = '2025-08-27.csv';
+    document.getElementByID('plot').innerText = 'Uploating ' + filename + '...';
+    console.log('Fetching:', filename);
 
     fetch(filename)
       .then(response => {
