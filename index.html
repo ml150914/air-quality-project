@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title> Air quality Monitor</title>
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+	<h1> Air Quality Monitor</h1>
+	<div id="plot"></div>
+	
+	<script>
+		const filename = new Date().toISOString().slice(0,10) + '.csv';
+		
+		fetch(filename)
+		 .then(response => response.text())
+		 .then(data => {
+			 const rows = data.trim().split('\n').slice(1); //skip header
+			 const time = [], temp = [], hum = [], pm25 =[];
+			 
+			 rows.forEach(row => {
+				 const cols = row.split(',');
+				 time.push(cols[0]);
+				 temp.push(parseFloat(cols[1]);
+				 hum.push(parseFloat(cols[2]);
+				 pm25.push(parseFloat(cols[5]);
+			 });
+			 
+			 const traces = [
+			 { x: time, y:temp, name:'Temperature (°C)', type: 'scatter'}
+			 { x: time, y:hum, name:'Humidity (%)', type: 'scatter'}
+			 { x: time, y:pm25, name:'PM2.5', type: 'scatter'}
+			 ];
+			 
+			 Plotly.newPlot('pot', tarces, {title: 'Today\'s Sensor Readings'});
+		 });
+	</script>
+</body>
+</html>
