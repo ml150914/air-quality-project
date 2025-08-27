@@ -1,39 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title> Air quality Monitor</title>
-	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Air Quality Monitor</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
-	<h1> Air Quality Monitor</h1>
-	<div id="plot"></div>
-	
-	<script>
-		const filename = new Date().toISOString().slice(0,10) + '.csv';
-		
-		fetch(filename)
-		 .then(response => response.text())
-		 .then(data => {
-			 const rows = data.trim().split('\n').slice(1); //skip header
-			 const time = [], temp = [], hum = [], pm25 =[];
-			 
-			 rows.forEach(row => {
-				 const cols = row.split(',');
-				 time.push(cols[0]);
-				 temp.push(parseFloat(cols[1]);
-				 hum.push(parseFloat(cols[2]);
-				 pm25.push(parseFloat(cols[5]);
-			 });
-			 
-			 const traces = [
-			 { x: time, y:temp, name:'Temperature (°C)', type: 'scatter'}
-			 { x: time, y:hum, name:'Humidity (%)', type: 'scatter'}
-			 { x: time, y:pm25, name:'PM2.5', type: 'scatter'}
-			 ];
-			 
-			 Plotly.newPlot('pot', tarces, {title: 'Today\'s Sensor Readings'});
-		 });
-	</script>
+  <h1>Air Quality Monitor</h1>
+  <div id="plot" style="width: 90%; height: 600px; margin: auto;"></div>
+
+  <script>
+    // ✅ MODIFICA QUI IL NOME DEL FILE (può essere anche dinamico)
+    const filename = '2025-08-27.csv';
+
+    fetch(filename)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("CSV file not found or inaccessible: " + filename);
+        }
+        return response.text();
+      })
+      .then(data => {
+        const rows = data.trim().split('\n');
+        const headers = rows[0].split(',');
+
+        // Assumiamo intestazioni: timestamp,temperature,humidity,pressure,pm1.0,pm2.5,pm10
+        const time = [], temp = [], hum = [], pm25 = [];
+
+        for (let i = 1; i < rows.length; i++) {
+          const cols = rows[i].split(',');
+          time.push(cols[0]);
+          temp.push(parseFloat(cols[1]));
+          hum.push(parseFloat(cols[2]));
+          pm25.push(parseFloat(cols[5]));
+        }
+
+        const traces = [
+          {
+            x: time,
+            y: temp,
+            name: 'Temperature (°C)',
+            type: 'scatter',
+            mode: 'lines+markers'
+          },
+          {
+            x: time,
+            y: hum,
+            name: 'Humidity (%)',
+            type: 'scatter',
+            mode: 'lines+markers'
+          },
+          {
+            x: time,
+            y: pm25,
+            name: 'PM2.5',
+            type: 'scatter',
+            mode: 'lines+markers'
+          }
+        ];
+
+        Plotly.newPlot('plot', traces, {
+          title: 'Sensor Data — ' + filename,
+          xaxis: { title: 'Time' },
+          yaxis: { title: 'Value' }
+        });
+      })
+      .catch(error => {
+        document.getElementById('plot').innerText = error.message;
+        console.error(error);
+      });
+  </script>
 </body>
 </html>
+
