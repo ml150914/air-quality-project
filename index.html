@@ -13,6 +13,11 @@
     body{background:#f8fafc}
     .kpi .card-title{font-size:.9rem; color:#64748b}
     .kpi .display-6{font-weight:700}
+    .card-body canvas {
+    width: 100% !important;
+    max-width: 80%;
+    display: block;
+  }
   </style>
   <!-- External CSS style block. Customize the bootstrap by overrisind it
      -body{...}: background page
@@ -465,7 +470,7 @@ async function bootstrap3(){
       RAW3 = await loadCSV(url);
       if (!RAW3.length) throw new Error('CSV vuoto');
       fillSelectors(RAW3, els3.timeCol, els3.valueCol);
-      render1();
+      render3();
       els3.meta.textContent = `Righe: ${RAW3.length} • Sorgente: ${new URL(url).hostname}`;
     }catch(err){
       console.error(err);
