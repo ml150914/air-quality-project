@@ -94,7 +94,7 @@
       <div class="d-flex gap-2"> <!-- Data input control: flex container with gap 2-->
         <select id="datasetSelect" class="form-select" style="min-width:360px"></select>
         <option value="">-- Choose a Dataset --</option> <!-- Default prompt -->
-        <option value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/2025-08-27.csv">2025-08-27</option>
+        <option value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/2025-08-27.csv" selected>2025-08-27</option>
         <option value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/2025-09-02.csv">2025-09-02</option>
         <option value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/2025-09-03.csv">2025-09-03</option>
       </select>
@@ -334,6 +334,7 @@
 
   // Avvio con URL precompilato
   bootstrap1();
+  bootstrap2();
 
   // Auto-refresh ogni 60s (se carichi lo stesso file sovrascritto dal repo)
   setInterval(() => {
