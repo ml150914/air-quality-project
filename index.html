@@ -29,7 +29,7 @@
   <div class="dashboard-section mb-5"> <!-- Added a wrapper and margin -->
     <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-3"> <!-- poses the childs in rational distribution -->
       <div> <!-- Title and metadata section -->
-        <h1 class="h3 mb-1">AirLab Dashboard - Last 60 mins</h1>
+        <h1 class="h3 mb-1">AirLab Dashboard - Last 60 min</h1>
         <div class="text-muted small" id="meta1">–</div> <!-- dinamic metadata -->
       </div>
       <div class="d-flex gap-2"> <!-- Data input control: flex container with gap 2-->
@@ -208,33 +208,33 @@
     return parsed.data; // array di oggetti
   }
 
-  function fillSelectors(rows, timeCol, valueColEl){
+  function fillSelectors(rows, timeColEl, valueColEl){
     const headers = Object.keys(rows[0] || {});
     // Pulisci
-    timeCol.innerHTML='';
-    valueCol.innerHTML='';
+    timeColEl.innerHTML='';
+    valueColEl.innerHTML='';
     // Time
     const tIdx = guessTimeColumns(headers);
     headers.forEach((h,i)=>{
       const opt = new Option(h, h, false, i===tIdx);
-      timeCol.add(opt);
+      timeColEl.add(opt);
     });
     // Value (tutte, l'utente sceglie)
     headers.forEach((h,i)=>{
       const opt = new Option(h, h, false, false);
-      valueCol.add(opt);
+      valueColEl.add(opt);
     });
     // Se esiste una colonna con valori numerici, pre-selezionala
     for (const h of headers){
       const v = rows.find(r => numberish(r[h]) !== null);
-      if (v){ valueCol.value = h; break; }
+      if (v){ valueColEl.value = h; break; }
     }
   }
   // dashboard specific render function
   function renderDashboard(RAW, timeColEl, valueColEl, kCurrEl, kAvgEl, kMinMaxEl, chartInstance, chartCanvasId){
     if (!RAW.length) return;
-    const tKey = timeCol.value;
-    const vKey = valueCol.value;
+    const tKey = timeColEl.value;
+    const vKey = valueColEl.value;
     if (!tKey || !vKey) return;
 
     const labels = [];
@@ -246,6 +246,7 @@
       labels.push(toLabel(t));
       values.push(v);
     }
+
     // KPI
     if (values.length){
       const curr = values.at(-1);
@@ -253,11 +254,11 @@
       const avg = sum/values.length;
       const min = Math.min(...values);
       const max = Math.max(...values);
-      kCurr.textContent = curr.toFixed(2);
-      kAvg.textContent = avg.toFixed(2);
-      kMinMax.textContent = `${min.toFixed(2)} / ${max.toFixed(2)}`;
+      kCurrEl.textContent = curr.toFixed(2);
+      kAvgEl.textContent = avg.toFixed(2);
+      kMinMaxEl.textContent = `${min.toFixed(2)} / ${max.toFixed(2)}`;
     } else {
-      kCurr.textContent = els.kAvg.textContent = els.kMinMax.textContent = '–';
+      kCurrEl.textContent = kAvgEl.textContent = kMinMaxEl.textContent = '–';
     }
 
     // Chart
@@ -267,7 +268,10 @@
       data:{ labels, datasets:[{ label: vKey, data: values, tension:0.3 }] },
       options:{ responsive:true, animation:false }
     };
-    if (chartInstance){ chartInstance.data = cfg.data; chartInstance.options = cfg.options; chartInstance.update(); }
+    if (chartInstance){ 
+      chartInstance.data = cfg.data; 
+      chartInstance.options = cfg.options; 
+      chartInstance.update(); }
     else { 
       chartInstance = new Chart(ctx, cfg);
       return chartInstance;
