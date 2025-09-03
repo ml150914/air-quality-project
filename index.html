@@ -460,20 +460,20 @@ let chart3;
 
 // Dashboard 3 bootstrap function
 async function bootstrap3(){
-  try{
-    const url = els3.csvUrl.value.trim();
-    RAW3 = await loadCSV(url);
-    if (!RAW3.length) throw new Error('CSV vuoto');
-    fillSelectors(RAW3, els3.timeCol, els3.valueCol);
-    render3();
-    els3.meta.textContent = `Righe: ${RAW3.length} • Sorgente: ${new URL(url).hostname}`;
-  }catch(err){
-    console.error(err);
-    els3.meta.textContent = 'Errore: ' + err.message;
-    RAW3 = [];
-    render3();
+    try{
+      const url = els3.csvUrl.value.trim();
+      RAW3 = await loadCSV(url);
+      if (!RAW3.length) throw new Error('CSV vuoto');
+      fillSelectors(RAW3, els3.timeCol, els3.valueCol);
+      render1();
+      els3.meta.textContent = `Righe: ${RAW3.length} • Sorgente: ${new URL(url).hostname}`;
+    }catch(err){
+      console.error(err);
+      els3.meta.textContent = 'Errore: ' + err.message;
+      RAW3 = [];
+      render3();
+    }
   }
-}
 
   // Dashboard Event 1
   els1.loadBtn.addEventListener('click', bootstrap1);
