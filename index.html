@@ -150,6 +150,65 @@
   </div>
 </div>
 
+ <!-- Last 24 Hours -->
+ <div class="dashboard-section mb-5">
+  <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-3">
+    <div>
+      <h1 class="h3 mb-1">AirLab Dashboard - Last 24 Hours</h1>
+      <div class="text-muted small" id="meta3">–</div>
+    </div>
+    <div class="d-flex gap-2">
+      <input id="csvUrl3" class="form-control" style="min-width:360px" placeholder="URL CSV (raw.githubusercontent.com)" value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/last_24H.csv">
+      <button id="loadBtn3" class="btn btn-primary">Load</button>
+    </div>
+  </div>
+
+  <!-- KPI -->
+  <div class="row g-3 kpi mb-3">
+    <div class="col-12 col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+          <div class="card-title">Current Value</div>
+          <div class="display-6" id="kpi-current3">–</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+          <div class="card-title">Mean</div>
+          <div class="display-6" id="kpi-avg3">–</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+          <div class="card-title">Min / Max</div>
+          <div class="display-6" id="kpi-minmax3">–</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-12 col-md-6">
+      <label class="form-label">Timestamp Column</label>
+      <select id="timeCol3" class="form-select"></select>
+    </div>
+    <div class="col-12 col-md-6">
+      <label class="form-label">Observable Columns</label>
+      <select id="valueCol3" class="form-select"></select>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <canvas id="chart3" height="120"></canvas>
+    </div>
+  </div>
+</div>
+
 <script>
   // This javascript is only for the last 60 min upload
   const els1 = {
@@ -177,6 +236,20 @@
   };
   let RAW2 = [];
   let chart2;
+
+// Dashboard 3 elements - Last 24 Hours
+const els3 = {
+  csvUrl: document.getElementById('csvUrl3'),
+  loadBtn: document.getElementById('loadBtn3'),
+  timeCol: document.getElementById('timeCol3'),
+  valueCol: document.getElementById('valueCol3'),
+  meta: document.getElementById('meta3'),
+  kCurr: document.getElementById('kpi-current3'),
+  kAvg: document.getElementById('kpi-avg3'),
+  kMinMax: document.getElementById('kpi-minmax3'),
+};
+let RAW3 = [];
+let chart3;
 
   // Shared utility functions
   function guessTimeColumns(headers) {
@@ -231,6 +304,7 @@
       if (v){ valueColEl.value = h; break; }
     }
   }
+
   // dashboard specific render function
   function renderDashboard(RAW, timeColEl, valueColEl, kCurrEl, kAvgEl, kMinMaxEl, chartInstance, chartCanvasId){
   if (!RAW.length) {
@@ -327,6 +401,12 @@
     chart2 = renderDashboard(RAW2, els2.timeCol, els2.valueCol, els2.kCurr, els2.kAvg, els2.kMinMax, chart2, 'chart2');
   }
 
+  // Dashboard 3 render function
+  function render3() { 
+    chart3 = renderDashboard(RAW3, els3.timeCol, els3.valueCol, els3.kCurr, els3.kAvg, els3.kMinMax, chart3, 'chart3');
+  }
+
+
   // Dashboard specific bootstrap
   async function bootstrap1(){
     try{
@@ -378,6 +458,23 @@
   }
 }
 
+// Dashboard 3 bootstrap function
+async function bootstrap3(){
+  try{
+    const url = els3.csvUrl.value.trim();
+    RAW3 = await loadCSV(url);
+    if (!RAW3.length) throw new Error('CSV vuoto');
+    fillSelectors(RAW3, els3.timeCol, els3.valueCol);
+    render3();
+    els3.meta.textContent = `Righe: ${RAW3.length} • Sorgente: ${new URL(url).hostname}`;
+  }catch(err){
+    console.error(err);
+    els3.meta.textContent = 'Errore: ' + err.message;
+    RAW3 = [];
+    render3();
+  }
+}
+
   // Dashboard Event 1
   els1.loadBtn.addEventListener('click', bootstrap1);
   els1.timeCol.addEventListener('change', render1);
@@ -388,14 +485,21 @@
   els2.timeCol.addEventListener('change', render2);
   els2.valueCol.addEventListener('change', render2);
 
+  // Dashboard Event 3
+  els3.loadBtn.addEventListener('click', bootstrap3);
+  els3.timeCol.addEventListener('change', render3);
+  els3.valueCol.addEventListener('change', render3);
+
   // Avvio con URL precompilato
   bootstrap1();
   bootstrap2();
+  bootstrap3(); 
 
   // Auto-refresh ogni 60s (se carichi lo stesso file sovrascritto dal repo)
   setInterval(() => {
     if (!els1.csvUrl.value) return;
     bootstrap1();
+    if (els3.csvUrl.value) bootstrap3(); 
   }, 60000);
 </script>
 </body>
