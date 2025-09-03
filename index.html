@@ -270,14 +270,25 @@
       options:{ responsive:true, animation:false }
     };
     if (chartInstance){ 
-      chartInstance.data = cfg.data; 
-      chartInstance.options = cfg.options; 
-      chartInstance.update(); }
-    else { 
-      chartInstance = new Chart(ctx, cfg);
-      return chartInstance;
-     }
+    // Destroy the old chart first
+    chartInstance.destroy();
+    }
+  
+    if (chartInstance){ 
+    // Update existing chart
+    chartInstance.data = cfg.data;
+    chartInstance.options = cfg.options;
+    chartInstance.update();
+  } else {
+    // Create new chart
+    const ctx = document.getElementById(chartCanvasId);
+    chartInstance = new Chart(ctx, cfg);
   }
+  
+  return chartInstance;
+  }
+
+
   function render1() { 
     chart1 = renderDashboard(RAW1, els1.timeCol, els1.valueCol, els1.kCurr, els1.kAvg, els1.kMinMax, chart1, 'chart1');
   }
