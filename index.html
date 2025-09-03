@@ -279,14 +279,14 @@
     chartInstance.data = cfg.data;
     chartInstance.options = cfg.options;
     chartInstance.update();
+    return chartInstance;
   } else {
     // Create new chart
-    const ctx = document.getElementById(chartCanvasId);
+    //const ctx = document.getElementById(chartCanvasId);
     chartInstance = new Chart(ctx, cfg);
+    return chartInstance
   }
-  
-  return chartInstance;
-  }
+}
 
 
   function render1() { 
