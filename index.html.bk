@@ -24,78 +24,16 @@
 
 <body> <!-- open the section of the HTML document seen by the users -->
 <div class="container py-4"> <!-- 'container' for the contents handling the margins; 'py-4': pads the y axis of the element, 4 is the size -->
-  
-  <!-- Latest 60 Min -->
-  <div class="dashboard-section mb-5"> <!-- Added a wrapper and margin -->
-    <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-3"> <!-- poses the childs in rational distribution -->
-      <div> <!-- Title and metadata section -->
-        <h1 class="h3 mb-1">AirLab Dashboard - Last 60 mins</h1>
-        <div class="text-muted small" id="meta">–</div> <!-- dinamic metadata -->
-      </div>
-      <div class="d-flex gap-2"> <!-- Data input control: flex container with gap 2-->
-        <input id="csvUrl" class="form-control" style="min-width:360px" placeholder="URL CSV (raw.githubusercontent.com)" value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/last_60min.csv"> <!-- unique ID to the input URL (Javascript); value is a default value -->
-        <button id="loadBtn" class="btn btn-primary">Load</button> <!-- button to load the data -->
-      </div>
+  <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-3"> <!-- poses the childs in rational distribution -->
+    <div> <!-- Title and metadata section -->
+      <h1 class="h3 mb-1">AirLab Dashboard</h1>
+      <div class="text-muted small" id="meta">–</div> <!-- dinamic metadata -->
     </div>
-
-  <!-- KPI -->
-  <div class="row g-3 kpi mb-3"> <!-- horizontal row containing columns with gap 3 -->
-    <div class="col-12 col-md-4"> <!-- auto-adjust with the screen dimension -->
-      <div class="card shadow-sm"> <!-- color and shadow options -->
-        <div class="card-body text-center"> <!-- padding inside the card with text at the center -->
-          <div class="card-title">Current Value</div> <!-- label + data -->
-          <div class="display-6" id="kpi-current">–</div>
-        </div>
-      </div>
-    </div>
-    <div class="col-6 col-md-4">
-      <div class="card shadow-sm">
-        <div class="card-body text-center">
-          <div class="card-title">Mean</div> <!-- show the Mean of the observale-->
-          <div class="display-6" id="kpi-avg">–</div>
-        </div>
-      </div>
-    </div>
-    <div class="col-6 col-md-4">
-      <div class="card shadow-sm">
-        <div class="card-body text-center">
-          <div class="card-title">Min / Max</div> <!-- show the spread of the measurable -->
-          <div class="display-6" id="kpi-minmax">–</div>
-        </div>
-      </div>
+    <div class="d-flex gap-2"> <!-- Data input control: flex container with gap 2-->
+      <input id="csvUrl" class="form-control" style="min-width:360px" placeholder="URL CSV (raw.githubusercontent.com)" value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/last_60min.csv"> <!-- unique ID to the input URL (Javascript); value is a default value -->
+      <button id="loadBtn" class="btn btn-primary">Load</button> <!-- button to load the data -->
     </div>
   </div>
-
-  <div class="row g-3 mb-3">
-    <div class="col-12 col-md-6">
-      <label class="form-label">Timestamp Column</label> <!-- Select the timestamp column -->
-      <select id="timeCol" class="form-select"></select> <!-- Select the time value to the timestamp values -->
-    </div>
-    <div class="col-12 col-md-6">
-      <label class="form-label">Observable Columns</label> <!-- Select the observable plottable -->
-      <select id="valueCol" class="form-select"></select>
-    </div>
-  </div>
-
-  <div class="card shadow-sm"> <!-- Drawn the canvas -->
-    <div class="card-body">
-      <canvas id="chart" height="120"></canvas> <!-- Unique identifier  -->
-    </div>
-  </div>
-</div>
-
-  <!-- Selected day -->
-  <div class="dashboard-section mb-5"> <!-- Added a wrapper and margin -->
-    <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-3"> <!-- poses the childs in rational distribution -->
-      <div> <!-- Title and metadata section -->
-        <h1 class="h3 mb-1">AirLab Dashboard - Custom Day</h1>
-        <div class="text-muted small" id="meta">–</div> <!-- dinamic metadata -->
-      </div>
-      <div class="d-flex gap-2"> <!-- Data input control: flex container with gap 2-->
-        <input id="csvUrl" class="form-control" style="min-width:360px" placeholder="URL CSV (raw.githubusercontent.com)" value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/last_60min.csv"> <!-- unique ID to the input URL (Javascript); value is a default value -->
-        <button id="loadBtn" class="btn btn-primary">Load</button> <!-- button to load the data -->
-      </div>
-    </div>
 
   <!-- KPI -->
   <div class="row g-3 kpi mb-3"> <!-- horizontal row containing columns with gap 3 -->
