@@ -233,58 +233,89 @@
   }
   // dashboard specific render function
   function renderDashboard(RAW, timeColEl, valueColEl, kCurrEl, kAvgEl, kMinMaxEl, chartInstance, chartCanvasId){
-    if (!RAW.length) return;
-    const tKey = timeColEl.value;
-    const vKey = valueColEl.value;
-    if (!tKey || !vKey) return;
-
-    const labels = [];
-    const values = [];
-    for (const r of RAW){
-      const t = r[tKey];
-      const v = numberish(r[vKey]);
-      if (t == null || v == null) continue;
-      labels.push(toLabel(t));
-      values.push(v);
-    }
-
-    // KPI
-    if (values.length){
-      const curr = values.at(-1);
-      const sum = values.reduce((a,b)=>a+b,0);
-      const avg = sum/values.length;
-      const min = Math.min(...values);
-      const max = Math.max(...values);
-      kCurrEl.textContent = curr.toFixed(2);
-      kAvgEl.textContent = avg.toFixed(2);
-      kMinMaxEl.textContent = `${min.toFixed(2)} / ${max.toFixed(2)}`;
-    } else {
-      kCurrEl.textContent = kAvgEl.textContent = kMinMaxEl.textContent = '–';
-    }
-
-    // Chart
-    const ctx = document.getElementById(chartCanvasId);
-    const cfg = {
-      type:'line',
-      data:{ labels, datasets:[{ label: vKey, data: values, tension:0.3 }] },
-      options:{ responsive:true, animation:false }
-    };
-    if (chartInstance){ 
-    // Destroy the old chart first
-    chartInstance.destroy();
-    }
-  
-    if (chartInstance){ 
-    // Update existing chart
-    chartInstance.data = cfg.data;
-    chartInstance.options = cfg.options;
-    chartInstance.update();
+  if (!RAW.length) {
+    // Clear KPIs if no data
+    kCurrEl.textContent = kAvgEl.textContent = kMinMaxEl.textContent = '–';
     return chartInstance;
+  }
+  
+  const tKey = timeColEl.value;
+  const vKey = valueColEl.value;
+  
+  if (!tKey || !vKey) {
+    // Clear KPIs if no valid selection
+    kCurrEl.textContent = kAvgEl.textContent = kMinMaxEl.textContent = '–';
+    return chartInstance;
+  }
+
+  const labels = [];
+  const values = [];
+  for (const r of RAW){
+    const t = r[tKey];
+    const v = numberish(r[vKey]);
+    if (t == null || v == null) continue;
+    labels.push(toLabel(t));
+    values.push(v);
+  }
+
+  // KPI
+  if (values.length){
+    const curr = values.at(-1);
+    const sum = values.reduce((a,b)=>a+b,0);
+    const avg = sum/values.length;
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    kCurrEl.textContent = curr.toFixed(2);
+    kAvgEl.textContent = avg.toFixed(2);
+    kMinMaxEl.textContent = `${min.toFixed(2)} / ${max.toFixed(2)}`;
   } else {
-    // Create new chart
-    //const ctx = document.getElementById(chartCanvasId);
-    chartInstance = new Chart(ctx, cfg);
-    return chartInstance
+    kCurrEl.textContent = kAvgEl.textContent = kMinMaxEl.textContent = '–';
+  }
+
+  // Chart handling - COMPLETELY NEW APPROACH
+  try {
+    const ctx = document.getElementById(chartCanvasId);
+    
+    // Always destroy existing chart first to avoid conflicts
+    if (chartInstance && typeof chartInstance.destroy === 'function') {
+      chartInstance.destroy();
+    }
+    
+    // Create new chart with current data
+    chartInstance = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: vKey,
+          data: values,
+          tension: 0.3,
+          borderColor: 'rgb(75, 192, 192)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)'
+        }]
+      },
+      options: {
+        responsive: true,
+        animation: false,
+        scales: {
+          y: {
+            beginAtZero: false
+          }
+        }
+      }
+    });
+    
+    return chartInstance;
+    
+  } catch (error) {
+    console.error('Error creating chart:', error);
+    // Clear the canvas if chart creation fails
+    const ctx = document.getElementById(chartCanvasId);
+    if (ctx && ctx.getContext) {
+      const context = ctx.getContext('2d');
+      context.clearRect(0, 0, ctx.width, ctx.height);
+    }
+    return null;
   }
 }
 
@@ -313,26 +344,39 @@
     }
   }
   async function bootstrap2(){
-    try{
-      // KEY CHANGE: Get URL from the SELECT dropdown, not an input field.
-      const selectedUrl = els2.datasetSelect.value; 
-      if (!selectedUrl) {
-        throw new Error('Per favore seleziona un dataset dalla lista.');
-      }
-      RAW2 = await loadCSV(selectedUrl);
-      if (!RAW2.length) throw new Error('CSV vuoto');
-      fillSelectors(RAW2, els2.timeCol, els2.valueCol);
-      render2();
-      // Get the friendly name of the selected option for the meta info
-      const selectedOption = els2.datasetSelect.options[els2.datasetSelect.selectedIndex];
-      els2.meta.textContent = `Righe: ${RAW2.length} • Dataset: ${selectedOption.text}`;
-    }catch(err){
-      console.error(err);
-      els2.meta.textContent = 'Errore: ' + err.message;
-      RAW2 = [];
-      render2();
+  try{
+    const selectedUrl = els2.datasetSelect.value; 
+    if (!selectedUrl) {
+      throw new Error('Per favore seleziona un dataset dalla lista.');
     }
+    
+    // Show loading state
+    els2.meta.textContent = 'Caricamento...';
+    
+    RAW2 = await loadCSV(selectedUrl);
+    if (!RAW2.length) throw new Error('CSV vuoto');
+    
+    fillSelectors(RAW2, els2.timeCol, els2.valueCol);
+    
+    // Make sure to capture the returned chart instance
+    chart2 = renderDashboard(RAW2, els2.timeCol, els2.valueCol, els2.kCurr, els2.kAvg, els2.kMinMax, chart2, 'chart2');
+    
+    const selectedOption = els2.datasetSelect.options[els2.datasetSelect.selectedIndex];
+    els2.meta.textContent = `Righe: ${RAW2.length} • Dataset: ${selectedOption.text}`;
+    
+  }catch(err){
+    console.error('Bootstrap2 error:', err);
+    els2.meta.textContent = 'Errore: ' + err.message;
+    RAW2 = [];
+    
+    // Clear the chart and KPIs on error
+    if (chart2) {
+      chart2.destroy();
+      chart2 = null;
+    }
+    els2.kCurr.textContent = els2.kAvg.textContent = els2.kMinMax.textContent = '–';
   }
+}
 
   // Dashboard Event 1
   els1.loadBtn.addEventListener('click', bootstrap1);
