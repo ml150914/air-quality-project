@@ -93,9 +93,9 @@
       </div>
       <div class="d-flex gap-2"> <!-- Data input control: flex container with gap 2-->
         <option value="">-- Choose a Dataset --</option> <!-- Default prompt -->
-        <option value="https://github.com/ml150914/air-quality-project/blob/main/2025-08-27.csv">2025-08-27</option>
-        <option value="https://github.com/ml150914/air-quality-project/blob/main/2025-09-02.csv">2025-09-02</option>
-        <option value="https://github.com/ml150914/air-quality-project/blob/main/2025-09-03.csv">2025-09-03</option>
+        <option value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/2025-08-27.csv">2025-08-27</option>
+        <option value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/2025-09-02.csv">2025-09-02</option>
+        <option value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/2025-09-03.csv">2025-09-03</option>
       </select>
       <button id="loadBtn2" class="btn btn-primary">Load</button>
     </div>
@@ -153,12 +153,12 @@
   const els1 = {
     csvUrl: document.getElementById('csvUrl'),
     loadBtn: document.getElementById('loadBtn'),
-    timeCol: document.getElementById('timeCol'),
-    valueCol: document.getElementById('valueCol'),
-    meta: document.getElementById('meta'),
-    kCurr: document.getElementById('kpi-current'),
-    kAvg: document.getElementById('kpi-avg'),
-    kMinMax: document.getElementById('kpi-minmax'),
+    timeCol: document.getElementById('timeCol1'), // Fixed to timeCol1
+    valueCol: document.getElementById('valueCol1'), // Fixed to valueCol1
+    meta: document.getElementById('meta1'), // Fixed to meta1
+    kCurr: document.getElementById('kpi-current1'), // Fixed to kpi-current1
+    kAvg: document.getElementById('kpi-avg1'), // Fixed to kpi-avg1
+    kMinMax: document.getElementById('kpi-minmax1'), // Fixed to kpi-minmax1
   };
   let RAW1 = [];
   let chart1;
@@ -166,12 +166,12 @@
   const els2 = {
     datasetSelect: document.getElementById('datasetSelect'),
     loadBtn: document.getElementById('loadBtn2'),
-    timeCol: document.getElementById('timeCol2'),
-    valueCol: document.getElementById('valueCol2'),
-    meta: document.getElementById('meta2'),
-    kCurr: document.getElementById('kpi-current2'),
-    kAvg: document.getElementById('kpi-avg2'),
-    kMinMax: document.getElementById('kpi-minmax2'),
+    timeCol: document.getElementById('timeCol2'), // Fixed to timeCol2
+    valueCol: document.getElementById('valueCol2'), // Fixed to valueCol2
+    meta: document.getElementById('meta2'), // Fixed to meta2
+    kCurr: document.getElementById('kpi-current2'), // Fixed to kpi-current2
+    kAvg: document.getElementById('kpi-avg2'), // Fixed to kpi-avg2
+    kMinMax: document.getElementById('kpi-minmax2'), // Fixed to kpi-minmax2
   };
   let RAW2 = [];
   let chart2;
@@ -207,33 +207,33 @@
     return parsed.data; // array di oggetti
   }
 
-  function fillSelectors(rows){
+  function fillSelectors(rows, timeCol, valueColEl){
     const headers = Object.keys(rows[0] || {});
     // Pulisci
-    els.timeCol.innerHTML='';
-    els.valueCol.innerHTML='';
+    timeCol.innerHTML='';
+    valueCol.innerHTML='';
     // Time
     const tIdx = guessTimeColumns(headers);
     headers.forEach((h,i)=>{
       const opt = new Option(h, h, false, i===tIdx);
-      els.timeCol.add(opt);
+      timeCol.add(opt);
     });
     // Value (tutte, l'utente sceglie)
     headers.forEach((h,i)=>{
       const opt = new Option(h, h, false, false);
-      els.valueCol.add(opt);
+      valueCol.add(opt);
     });
     // Se esiste una colonna con valori numerici, pre-selezionala
     for (const h of headers){
       const v = rows.find(r => numberish(r[h]) !== null);
-      if (v){ els.valueCol.value = h; break; }
+      if (v){ valueCol.value = h; break; }
     }
   }
   // dashboard specific render function
-  function renderDashboard(RAW, timeColEl, valueColEl, kCurrEl, KAvgEl, kMinMaxEl, charInstance, chartCavasId){
+  function renderDashboard(RAW, timeColEl, valueColEl, kCurrEl, kAvgEl, kMinMaxEl, chartInstance, chartCanvasId){
     if (!RAW.length) return;
-    const tKey = els.timeCol.value;
-    const vKey = els.valueCol.value;
+    const tKey = timeCol.value;
+    const vKey = valueCol.value;
     if (!tKey || !vKey) return;
 
     const labels = [];
@@ -252,11 +252,11 @@
       const avg = sum/values.length;
       const min = Math.min(...values);
       const max = Math.max(...values);
-      els.kCurr.textContent = curr.toFixed(2);
-      els.kAvg.textContent = avg.toFixed(2);
-      els.kMinMax.textContent = `${min.toFixed(2)} / ${max.toFixed(2)}`;
+      kCurr.textContent = curr.toFixed(2);
+      kAvg.textContent = avg.toFixed(2);
+      kMinMax.textContent = `${min.toFixed(2)} / ${max.toFixed(2)}`;
     } else {
-      els.kCurr.textContent = els.kAvg.textContent = els.kMinMax.textContent = '–';
+      kCurr.textContent = els.kAvg.textContent = els.kMinMax.textContent = '–';
     }
 
     // Chart
@@ -266,10 +266,10 @@
       data:{ labels, datasets:[{ label: vKey, data: values, tension:0.3 }] },
       options:{ responsive:true, animation:false }
     };
-    if (charInstance){ chart.data = cfg.data; chart.options = cfg.options; chart.update(); }
+    if (chartInstance){ chartInstance.data = cfg.data; chartInstance.options = cfg.options; chartInstance.update(); }
     else { 
-      charInstance = new Chart(ctx, cfg);
-      return charInstance;
+      chartInstance = new Chart(ctx, cfg);
+      return chartInstance;
      }
   }
   function render1() { 
@@ -318,21 +318,21 @@
   }
 
   // Dashboard Event 1
-  els.loadBtn.addEventListener('click', bootstrap1);
-  els.timeCol.addEventListener('change', render1);
-  els.valueCol.addEventListener('change', render1);
+  els1.loadBtn.addEventListener('click', bootstrap1);
+  els1.timeCol.addEventListener('change', render1);
+  els1.valueCol.addEventListener('change', render1);
 
   // Dashboard Event 2
-  els.loadBtn.addEventListener('click', bootstrap2);
-  els.timeCol.addEventListener('change', render2);
-  els.valueCol.addEventListener('change', render2);
+  els2.loadBtn.addEventListener('click', bootstrap2);
+  els2.timeCol.addEventListener('change', render2);
+  els2.valueCol.addEventListener('change', render2);
 
   // Avvio con URL precompilato
   bootstrap1();
 
   // Auto-refresh ogni 60s (se carichi lo stesso file sovrascritto dal repo)
   setInterval(() => {
-    if (!els.csvUrl.value) return;
+    if (!els1.csvUrl.value) return;
     bootstrap1();
   }, 60000);
 </script>
