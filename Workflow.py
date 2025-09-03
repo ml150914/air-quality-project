@@ -47,7 +47,7 @@ def git_push(filname, time):
 	#os.system(f'cp {filename} air-quality-project'}
 	os.system('git add .')
 	os.system(f'git commit -m "{time}"')
-	os.system(f'ssh -p "K@osone1996150914" git push')
+	os.system(f'git push')
 
 # initialize 
 current_date = datetime.now().date()
