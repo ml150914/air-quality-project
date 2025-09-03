@@ -149,7 +149,8 @@
 </div>
 
 <script>
-  const els = {
+  // This javascript is only for the last 60 min upload
+  const els1 = {
     csvUrl: document.getElementById('csvUrl'),
     loadBtn: document.getElementById('loadBtn'),
     timeCol: document.getElementById('timeCol'),
@@ -159,9 +160,23 @@
     kAvg: document.getElementById('kpi-avg'),
     kMinMax: document.getElementById('kpi-minmax'),
   };
-  let RAW = [];
-  let chart;
+  let RAW1 = [];
+  let chart1;
+  // Javascript for the second chart
+  const els2 = {
+    datasetSelect: document.getElementById('datasetSelect'),
+    loadBtn: document.getElementById('loadBtn2'),
+    timeCol: document.getElementById('timeCol2'),
+    valueCol: document.getElementById('valueCol2'),
+    meta: document.getElementById('meta2'),
+    kCurr: document.getElementById('kpi-current2'),
+    kAvg: document.getElementById('kpi-avg2'),
+    kMinMax: document.getElementById('kpi-minmax2'),
+  };
+  let RAW2 = [];
+  let chart2;
 
+  // Shared utility functions
   function guessTimeColumns(headers) {
     // priorità a nomi comuni
     const prefs = ['timestamp','time','datetime','date','Data','Timestamp'];
@@ -171,11 +186,6 @@
     }
     // fallback: prima colonna
     return 0;
-  }
-  function guessValueColumns(headers) {
-    // scegli la prima colonna numerica plausibile (escludendo la time)
-    const candidates = headers.map((h,i)=>({h,i}));
-    return candidates; // l'utente sceglierà dal menu
   }
   function toLabel(t){
     const d = new Date(t);
@@ -219,8 +229,8 @@
       if (v){ els.valueCol.value = h; break; }
     }
   }
-
-  function render(){
+  // dashboard specific render function
+  function renderDashboard(RAW, timeColEl, valueColEl, kCurrEl, KAvgEl, kMinMaxEl, charInstance, chartCavasId){
     if (!RAW.length) return;
     const tKey = els.timeCol.value;
     const vKey = els.valueCol.value;
@@ -250,44 +260,80 @@
     }
 
     // Chart
-    const ctx = document.getElementById('chart');
+    const ctx = document.getElementById(chartCanvasId);
     const cfg = {
       type:'line',
       data:{ labels, datasets:[{ label: vKey, data: values, tension:0.3 }] },
       options:{ responsive:true, animation:false }
     };
-    if (chart){ chart.data = cfg.data; chart.options = cfg.options; chart.update(); }
-    else { chart = new Chart(ctx, cfg); }
+    if (charInstance){ chart.data = cfg.data; chart.options = cfg.options; chart.update(); }
+    else { 
+      charInstance = new Chart(ctx, cfg);
+      return charInstance;
+     }
+  }
+  function render1() { 
+    chart1 = renderDashboard(RAW1, els1.timeCol, els1.valueCol, els1.kCurr, els1.kAvg, els1.kMinMax, chart1, 'chart1');
+  }
+  function render2() { 
+    chart2 = renderDashboard(RAW2, els2.timeCol, els2.valueCol, els2.kCurr, els2.kAvg, els2.kMinMax, chart2, 'chart2');
   }
 
-  async function bootstrap(){
+  // Dashboard specific bootstrap
+  async function bootstrap1(){
     try{
-      const url = els.csvUrl.value.trim();
-      RAW = await loadCSV(url);
-      if (!RAW.length) throw new Error('CSV vuoto');
-      fillSelectors(RAW);
-      render();
-      els.meta.textContent = `Righe: ${RAW.length} • Sorgente: ${new URL(url).hostname}`;
+      const url = els1.csvUrl.value.trim();
+      RAW1 = await loadCSV(url);
+      if (!RAW1.length) throw new Error('CSV vuoto');
+      fillSelectors(RAW1, els1.timeCol, els1.valueCol);
+      render1();
+      els1.meta.textContent = `Righe: ${RAW1.length} • Sorgente: ${new URL(url).hostname}`;
     }catch(err){
       console.error(err);
-      els.meta.textContent = 'Errore: ' + err.message;
-      RAW = [];
-      render();
+      els1.meta.textContent = 'Errore: ' + err.message;
+      RAW1 = [];
+      render1();
+    }
+  }
+  async function bootstrap2(){
+    try{
+      // KEY CHANGE: Get URL from the SELECT dropdown, not an input field.
+      const selectedUrl = els2.datasetSelect.value; 
+      if (!selectedUrl) {
+        throw new Error('Per favore seleziona un dataset dalla lista.');
+      }
+      RAW2 = await loadCSV(selectedUrl);
+      if (!RAW2.length) throw new Error('CSV vuoto');
+      fillSelectors(RAW2, els2.timeCol, els2.valueCol);
+      render2();
+      // Get the friendly name of the selected option for the meta info
+      const selectedOption = els2.datasetSelect.options[els2.datasetSelect.selectedIndex];
+      els2.meta.textContent = `Righe: ${RAW2.length} • Dataset: ${selectedOption.text}`;
+    }catch(err){
+      console.error(err);
+      els2.meta.textContent = 'Errore: ' + err.message;
+      RAW2 = [];
+      render2();
     }
   }
 
-  // Eventi
-  els.loadBtn.addEventListener('click', bootstrap);
-  els.timeCol.addEventListener('change', render);
-  els.valueCol.addEventListener('change', render);
+  // Dashboard Event 1
+  els.loadBtn.addEventListener('click', bootstrap1);
+  els.timeCol.addEventListener('change', render1);
+  els.valueCol.addEventListener('change', render1);
+
+  // Dashboard Event 2
+  els.loadBtn.addEventListener('click', bootstrap2);
+  els.timeCol.addEventListener('change', render2);
+  els.valueCol.addEventListener('change', render2);
 
   // Avvio con URL precompilato
-  bootstrap();
+  bootstrap1();
 
   // Auto-refresh ogni 60s (se carichi lo stesso file sovrascritto dal repo)
   setInterval(() => {
     if (!els.csvUrl.value) return;
-    bootstrap();
+    bootstrap1();
   }, 60000);
 </script>
 </body>
