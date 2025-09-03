@@ -63,7 +63,8 @@ bme280.load_calibration_params(bus,address)
 # read PMS5003
 pms5003 = PMS5003(device="/dev/ttyAMA0", baudrate=9600)
 
-start_time = time.time()
+start_time60min = time.time()
+start_time24H = time.time()
 time_workflow = time.time()
 try:
 	while True:
@@ -95,23 +96,24 @@ try:
 			writer.writerow([timestamp, ambient_temperature, humidity, pressure, data.pm_ug_per_m3(1.0), data.pm_ug_per_m3(2.5), data.pm_ug_per_m3(10)])
 		
 		#60 min buffer
-		current_time = time.time() - start_time
+		current_time = time.time() - start_time60min
 		if current_time > BUFFER_LENGTH_60MIN:
 			#ensure_file_has_header(CSV_FILE_LAST60MIN)
 			save_buffer(buffer_60M, CSV_FILE_LAST60MIN)
 			# clean the buffer
 			cleaned_buffer = deque(maxlen = BUFFER_LENGTH_60MIN)
 			buffer_60M = cleaned_buffer
-			start_time = time.time()
-			git_push(CSV_FILE_LAST60MIN, start_time)
+			start_time_60min = time.time()
+			git_push(CSV_FILE_LAST60MIN, start_time60min)
 		
+		current_time = time.time() - start_time24H
 		if current_time > BUFFER_LENGTH_24H:
 			save_buffer(buffer_24H, CSV_FILE_LAST24H)
 			# clean the buffer
 			cleaned_buffer = deque(maxlen = BUFFER_LENGTH_24H)
 			buffer_24H = cleaned_buffer
-			start_time = time.time()
-			git_push(CSV_FILE_LAST60MIN, start_time)
+			start_time24H = time.time()
+			git_push(CSV_FILE_LAST60MIN, start_time24H)
 		add_data(buffer_60M, data_buffer)
 		add_data(buffer_24H, data_buffer)
 		sleep(60)
