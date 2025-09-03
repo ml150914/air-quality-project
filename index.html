@@ -30,7 +30,7 @@
     <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-3"> <!-- poses the childs in rational distribution -->
       <div> <!-- Title and metadata section -->
         <h1 class="h3 mb-1">AirLab Dashboard - Last 60 mins</h1>
-        <div class="text-muted small" id="meta">–</div> <!-- dinamic metadata -->
+        <div class="text-muted small" id="meta1">–</div> <!-- dinamic metadata -->
       </div>
       <div class="d-flex gap-2"> <!-- Data input control: flex container with gap 2-->
         <input id="csvUrl" class="form-control" style="min-width:360px" placeholder="URL CSV (raw.githubusercontent.com)" value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/last_60min.csv"> <!-- unique ID to the input URL (Javascript); value is a default value -->
@@ -44,7 +44,7 @@
       <div class="card shadow-sm"> <!-- color and shadow options -->
         <div class="card-body text-center"> <!-- padding inside the card with text at the center -->
           <div class="card-title">Current Value</div> <!-- label + data -->
-          <div class="display-6" id="kpi-current">–</div>
+          <div class="display-6" id="kpi-current1">–</div>
         </div>
       </div>
     </div>
@@ -52,7 +52,7 @@
       <div class="card shadow-sm">
         <div class="card-body text-center">
           <div class="card-title">Mean</div> <!-- show the Mean of the observale-->
-          <div class="display-6" id="kpi-avg">–</div>
+          <div class="display-6" id="kpi-avg1">–</div>
         </div>
       </div>
     </div>
@@ -60,7 +60,7 @@
       <div class="card shadow-sm">
         <div class="card-body text-center">
           <div class="card-title">Min / Max</div> <!-- show the spread of the measurable -->
-          <div class="display-6" id="kpi-minmax">–</div>
+          <div class="display-6" id="kpi-minmax1">–</div>
         </div>
       </div>
     </div>
@@ -69,17 +69,17 @@
   <div class="row g-3 mb-3">
     <div class="col-12 col-md-6">
       <label class="form-label">Timestamp Column</label> <!-- Select the timestamp column -->
-      <select id="timeCol" class="form-select"></select> <!-- Select the time value to the timestamp values -->
+      <select id="timeCol1" class="form-select"></select> <!-- Select the time value to the timestamp values -->
     </div>
     <div class="col-12 col-md-6">
       <label class="form-label">Observable Columns</label> <!-- Select the observable plottable -->
-      <select id="valueCol" class="form-select"></select>
+      <select id="valueCol1" class="form-select"></select>
     </div>
   </div>
 
   <div class="card shadow-sm"> <!-- Drawn the canvas -->
     <div class="card-body">
-      <canvas id="chart" height="120"></canvas> <!-- Unique identifier  -->
+      <canvas id="chart1" height="120"></canvas> <!-- Unique identifier  -->
     </div>
   </div>
 </div>
@@ -89,9 +89,10 @@
     <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-3"> <!-- poses the childs in rational distribution -->
       <div> <!-- Title and metadata section -->
         <h1 class="h3 mb-1">AirLab Dashboard - Custom Day</h1>
-        <div class="text-muted small" id="meta">–</div> <!-- dinamic metadata -->
+        <div class="text-muted small" id="meta2">–</div> <!-- dinamic metadata -->
       </div>
       <div class="d-flex gap-2"> <!-- Data input control: flex container with gap 2-->
+        <select id="datasetSelect" class="form-select" style="min-width:360px"></select>
         <option value="">-- Choose a Dataset --</option> <!-- Default prompt -->
         <option value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/2025-08-27.csv">2025-08-27</option>
         <option value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/2025-09-02.csv">2025-09-02</option>
@@ -100,7 +101,7 @@
       <button id="loadBtn2" class="btn btn-primary">Load</button>
     </div>
 
-    </div>
+  </div>
 
   <!-- KPI -->
   <div class="row g-3 kpi mb-3"> <!-- horizontal row containing columns with gap 3 -->
@@ -108,7 +109,7 @@
       <div class="card shadow-sm"> <!-- color and shadow options -->
         <div class="card-body text-center"> <!-- padding inside the card with text at the center -->
           <div class="card-title">Current Value</div> <!-- label + data -->
-          <div class="display-6" id="kpi-current">–</div>
+          <div class="display-6" id="kpi-current2">–</div>
         </div>
       </div>
     </div>
@@ -116,7 +117,7 @@
       <div class="card shadow-sm">
         <div class="card-body text-center">
           <div class="card-title">Mean</div> <!-- show the Mean of the observale-->
-          <div class="display-6" id="kpi-avg">–</div>
+          <div class="display-6" id="kpi-avg2">–</div>
         </div>
       </div>
     </div>
@@ -124,7 +125,7 @@
       <div class="card shadow-sm">
         <div class="card-body text-center">
           <div class="card-title">Min / Max</div> <!-- show the spread of the measurable -->
-          <div class="display-6" id="kpi-minmax">–</div>
+          <div class="display-6" id="kpi-minmax2">–</div>
         </div>
       </div>
     </div>
@@ -132,18 +133,18 @@
 
   <div class="row g-3 mb-3">
     <div class="col-12 col-md-6">
-      <label class="form-label">Timestamp Column</label> <!-- Select the timestamp column -->
-      <select id="timeCol" class="form-select"></select> <!-- Select the time value to the timestamp values -->
+      <label class="form-label">Timestamp Column</label>
+      <select id="timeCol2" class="form-select"></select> <!-- Changed to timeCol2 -->
     </div>
     <div class="col-12 col-md-6">
-      <label class="form-label">Observable Columns</label> <!-- Select the observable plottable -->
-      <select id="valueCol" class="form-select"></select>
+      <label class="form-label">Observable Columns</label>
+      <select id="valueCol2" class="form-select"></select> <!-- Changed to valueCol2 -->
     </div>
   </div>
 
-  <div class="card shadow-sm"> <!-- Drawn the canvas -->
+  <div class="card shadow-sm">
     <div class="card-body">
-      <canvas id="chart" height="120"></canvas> <!-- Unique identifier  -->
+      <canvas id="chart2" height="120"></canvas> <!-- Changed to chart2 -->
     </div>
   </div>
 </div>
