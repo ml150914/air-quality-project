@@ -33,7 +33,7 @@
         <div class="text-muted small" id="meta1">–</div> <!-- dinamic metadata -->
       </div>
       <div class="d-flex gap-2"> <!-- Data input control: flex container with gap 2-->
-        <input id="csvUrl" class="form-control" style="min-width:360px" placeholder="URL CSV (raw.githubusercontent.com)" value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/last_60min.csv"> <!-- unique ID to the input URL (Javascript); value is a default value -->
+        <input id="csvUrl" class="form-control" style="min-width:360px" placeholder="URL CSV (raw.githubusercontent.com)" value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/data/last_60min.csv"> <!-- unique ID to the input URL (Javascript); value is a default value -->
         <button id="loadBtn" class="btn btn-primary">Load</button> <!-- button to load the data -->
       </div>
     </div>
@@ -95,9 +95,6 @@
       <!-- FIXED: Put option tags INSIDE the select element -->
       <select id="datasetSelect" class="form-select" style="min-width:360px">
         <option value="">-- Choose a Dataset --</option> <!-- Default prompt -->
-        <option value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/2025-08-27.csv" selected>2025-08-27</option>
-        <option value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/2025-09-02.csv">2025-09-02</option>
-        <option value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/2025-09-03.csv">2025-09-03</option>
       </select>
       <button id="loadBtn2" class="btn btn-primary">Load</button>
     </div>
@@ -158,7 +155,7 @@
       <div class="text-muted small" id="meta3">–</div>
     </div>
     <div class="d-flex gap-2">
-      <input id="csvUrl3" class="form-control" style="min-width:360px" placeholder="URL CSV (raw.githubusercontent.com)" value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/last_24H.csv">
+      <input id="csvUrl3" class="form-control" style="min-width:360px" placeholder="URL CSV (raw.githubusercontent.com)" value="https://raw.githubusercontent.com/ml150914/air-quality-project/main/data/last_24H.csv">
       <button id="loadBtn3" class="btn btn-primary">Load</button>
     </div>
   </div>
@@ -475,6 +472,50 @@ async function bootstrap3(){
       render3();
     }
   }
+
+  async function populateDatasetDropdown() {
+  const datasetSelect = document.getElementById('datasetSelect');
+  const repoOwner = 'ml150914';
+  const repoName = 'air-quality-project';
+  const dataFolder = 'data'; // Your folder name
+  
+  try {
+    // Show loading state
+    datasetSelect.innerHTML = '<option value="">Loading datasets...</option>';
+    
+    // Fetch list of files from GitHub API
+    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${dataFolder}`);
+    
+    if (!response.ok) throw new Error('Failed to fetch dataset list');
+    
+    const files = await response.json();
+    
+    // Clear existing options
+    datasetSelect.innerHTML = '<option value="">-- Choose a Dataset --</option>';
+    
+    // Filter and add CSV files
+    files.forEach(file => {
+      if (file.name.endsWith('.csv')) {
+        const option = document.createElement('option');
+        option.value = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${dataFolder}/${file.name}`;
+        option.textContent = file.name.replace('.csv', '');
+        datasetSelect.appendChild(option);
+      }
+    });
+    
+    // Auto-select the first dataset if available
+    if (datasetSelect.options.length > 1) {
+      datasetSelect.selectedIndex = 1;
+    }
+    
+  } catch (error) {
+    console.error('Error loading datasets:', error);
+    datasetSelect.innerHTML = '<option value="">Error loading datasets</option>';
+  }
+}
+
+// Call this function when the page loads
+document.addEventListener('DOMContentLoaded', populateDatasetDropdown);
 
   // Dashboard Event 1
   els1.loadBtn.addEventListener('click', bootstrap1);
