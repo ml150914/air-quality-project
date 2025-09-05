@@ -22,6 +22,15 @@ This repo systematize the results, slim the codes and push forward the realizati
 
 ![alt text](https://github.com/ml150914/air-quality-project/blob/main/img/hardware/Full.jpeg?raw=true)
 
+The particulate matter sensors consists in several parts: its core is the Raspberry Pi 3b+, that will provide the computational power, software and the bus 
+connections to the sensors used in this project. The other components are 
+
+- The Humidity-Pressure-Temperature sensor [BME280](https://www.az-delivery.de/en/products/gy-bme280): this component will provide via I2C connection to the Raspi the measures of Humidity (in percentage), Pressure and Temperature. 
+- The Real Time Clock [DS1307](https://www.adafruit.com/product/3296?srsltid=AfmBOoqToZsj_g6XT4jFUPPgfDiY9sam4DGW6y4Wb-nZz4YL4SSkPlxn): in this way a clock is provided even if the Raspi is not connected to the WiFi; useful for outdoors measurements.
+- The [PMS5003](https://www.aqmd.gov/docs/default-source/aq-spec/resources-page/plantower-pms5003-manual_v2-3.pdf) sensor: cheap and robust sensor that will measure the concentration of particulate matter (PM1.0 - PM2.5 - PM10).
+
+Along with these, you will need of course some basic do-it-yourself stuff like the breadboard for the connections, wires (compatible with the GPIO pins of the Raspi), scissors, tin soldering, insulating tape and a lot of patience!
+
 ## Software 
 
 ## Check the data!
