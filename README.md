@@ -20,7 +20,7 @@ This repo systematize the results, slim the codes and push forward the realizati
 
 ## Hardware
 
-![alt text](https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true)
+![alt text](https://github.com/ml150914/air-quality-project/blob/main/img/hardware/Full.jpeg?raw=true)
 
 ## Software 
 
