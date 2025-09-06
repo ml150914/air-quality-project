@@ -113,7 +113,7 @@ try:
 			cleaned_buffer = deque(maxlen = BUFFER_LENGTH_24H)
 			buffer_24H = cleaned_buffer
 			start_time24H = time.time()
-			git_push(CSV_FILE_LAST60MIN, start_time24H)
+			git_push(CSV_FILE_LAST24H, start_time24H)
 		add_data(buffer_60M, data_buffer)
 		add_data(buffer_24H, data_buffer)
 		sleep(60)
