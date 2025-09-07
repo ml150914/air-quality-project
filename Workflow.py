@@ -98,7 +98,7 @@ try:
 			# clean the buffer
 			cleaned_buffer = deque(maxlen = BUFFER_LENGTH_60MIN)
 			buffer_60M = cleaned_buffer
-			start_time_60min = current_time
+			start_time60min = current_time
 			git_push(CSV_FILE_LAST60MIN, start_time60min)
 		
 		current_time = time.time() - start_time24H
