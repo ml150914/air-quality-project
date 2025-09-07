@@ -92,6 +92,7 @@ try:
 		
 		#60 min buffer
 		current_time = time.time() - start_time60min
+		print(current_time)
 		if current_time > BUFFER_LENGTH_60MIN:
 			print('SAVING THE 60M BUFFER')
 			save_buffer(buffer_60M, CSV_FILE_LAST60MIN)
