@@ -32,8 +32,8 @@ def ensure_file_has_header(filename):
 
 
 # Save the data into the buffer (csv)
-def save_buffer(buffer_60M, name_file = CSV_FILE_LAST60MIN):
-	with open(name_file, mode = 'w', newline = '') as f:
+def save_buffer(buffer_60M, name_file):
+	with open('data/' + name_file, mode = 'w', newline = '') as f:
 		writer = csv.writer(f)
 		writer.writerow(['timestamp', 'temperature', 'humidity', 'pressure', 'pm1.0', 'pm2.5', 'pm10'])
 		for row in buffer_60M:
