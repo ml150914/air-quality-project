@@ -24,7 +24,7 @@ def get_now_timestamp():
 	
 def ensure_file_has_header(filename):
 	try:
-		with open(filename, 'x', newline= '') as f:
+		with open('data/' + filename, 'x', newline= '') as f:
 			writer = csv.writer(f)
 			writer.writerow(['timestamp', 'temperature', 'humidity', 'pressure', 'pm1.0', 'pm2.5', 'pm10'])
 	except	FileExistsError:
@@ -88,6 +88,7 @@ try:
 		
 		with open('data/' + filename, 'a', newline='') as f:
 			writer = csv.writer(f)
+			ensure_file_has_header(filename)
 			writer.writerow([timestamp, ambient_temperature, humidity, pressure, data.pm_ug_per_m3(1.0), data.pm_ug_per_m3(2.5), data.pm_ug_per_m3(10)])
 		
 		#60 min buffer
