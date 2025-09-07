@@ -93,6 +93,7 @@ try:
 		#60 min buffer
 		current_time = time.time() - start_time60min
 		if current_time > BUFFER_LENGTH_60MIN:
+			print('SAVING THE 60M BUFFER')
 			save_buffer(buffer_60M, CSV_FILE_LAST60MIN)
 			# clean the buffer
 			cleaned_buffer = deque(maxlen = BUFFER_LENGTH_60MIN)
@@ -102,6 +103,7 @@ try:
 		
 		current_time = time.time() - start_time24H
 		if current_time > BUFFER_LENGTH_24H:
+			print('SAVING THE 24h BUFFER')
 			save_buffer(buffer_24H, CSV_FILE_LAST24H)
 			# clean the buffer
 			cleaned_buffer = deque(maxlen = BUFFER_LENGTH_24H)
