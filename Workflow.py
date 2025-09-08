@@ -79,7 +79,7 @@ try:
 		print(f'PM1.0 {data.pm_ug_per_m3(1.0)} | PM2.5 {data.pm_ug_per_m3(2.5)} | PM10: {data.pm_ug_per_m3(10)}')
 		print('\n')
 		
-		data_buffer = [timestamp, ambient_temperature, humidity, pressure, data.pm_ug_per_m3(1.0), data.pm_ug_per_m3(2.5), data.pm_ug_per_m3(10)]
+		data_buffer = [timestamp, ambient_temperature, pressure, humidity, data.pm_ug_per_m3(1.0), data.pm_ug_per_m3(2.5), data.pm_ug_per_m3(10)]
 		# Check id the day changed
 		if now.date() != current_date:
 			current_date = now.date()
@@ -89,7 +89,7 @@ try:
 		with open('data/' + filename, 'a', newline='') as f:
 			writer = csv.writer(f)
 			ensure_file_has_header(filename)
-			writer.writerow([timestamp, ambient_temperature, humidity, pressure, data.pm_ug_per_m3(1.0), data.pm_ug_per_m3(2.5), data.pm_ug_per_m3(10)])
+			writer.writerow([timestamp, ambient_temperature, pressure, humidity, data.pm_ug_per_m3(1.0), data.pm_ug_per_m3(2.5), data.pm_ug_per_m3(10)])
 		
 		#60 min buffer
 		timer_60 = time.time() - start_time60min
