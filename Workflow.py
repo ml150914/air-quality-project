@@ -26,7 +26,7 @@ def ensure_file_has_header(filename):
 	try:
 		with open('data/' + filename, 'x', newline= '') as f:
 			writer = csv.writer(f)
-			writer.writerow(['timestamp', 'temperature', 'humidity', 'pressure', 'pm1.0', 'pm2.5', 'pm10'])
+			writer.writerow(['timestamp', 'temperature','pressure','humidity', 'pm1.0', 'pm2.5', 'pm10'])
 	except	FileExistsError:
 		pass
 
@@ -35,7 +35,7 @@ def ensure_file_has_header(filename):
 def save_buffer(buffer_tmp, name_file):
 	with open('data/' + name_file, mode = 'w', newline = '') as f:
 		writer = csv.writer(f)
-		writer.writerow(['timestamp', 'temperature', 'humidity', 'pressure', 'pm1.0', 'pm2.5', 'pm10'])
+		writer.writerow(['timestamp', 'temperature','pressure','humidity', 'pm1.0', 'pm2.5', 'pm10'])
 		for row in buffer_tmp:
 			writer.writerow(row)
 			
@@ -79,7 +79,7 @@ try:
 		print(f'PM1.0 {data.pm_ug_per_m3(1.0)} | PM2.5 {data.pm_ug_per_m3(2.5)} | PM10: {data.pm_ug_per_m3(10)}')
 		print('\n')
 		
-		data_buffer = [timestamp, humidity, pressure, ambient_temperature, data.pm_ug_per_m3(1.0), data.pm_ug_per_m3(2.5), data.pm_ug_per_m3(10)]
+		data_buffer = [timestamp, ambient_temperature, humidity, pressure, data.pm_ug_per_m3(1.0), data.pm_ug_per_m3(2.5), data.pm_ug_per_m3(10)]
 		# Check id the day changed
 		if now.date() != current_date:
 			current_date = now.date()
