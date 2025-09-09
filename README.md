@@ -29,9 +29,26 @@ connections to the sensors used in this project. The other components are
 - The Real Time Clock [DS1307](https://www.adafruit.com/product/3296?srsltid=AfmBOoqToZsj_g6XT4jFUPPgfDiY9sam4DGW6y4Wb-nZz4YL4SSkPlxn): in this way a clock is provided even if the Raspi is not connected to the WiFi; useful for outdoors measurements.
 - The [PMS5003](https://www.aqmd.gov/docs/default-source/aq-spec/resources-page/plantower-pms5003-manual_v2-3.pdf) sensor: cheap and robust sensor that will measure the concentration of particulate matter (PM1.0 - PM2.5 - PM10).
 
-Along with these, you will need of course some basic do-it-yourself stuff like the breadboard for the connections, wires (compatible with the GPIO pins of the Raspi), scissors, tin soldering, insulating tape and a lot of patience!
+Along with these, you will need of course some basic do-it-yourself stuff like the breadboard for the connections, wires (compatible with the GPIO pins of the Raspi), scissors, tin soldering, insulating tape and a lot of patience! To connect the hardware to the Raspi just follow the pin-map as specified in the previous links. 
 
 ## Software 
+
+Once the connections are done, we have fo configure the raspi to acquire the data. This can be done by enabling the i2c channel
+
+```
+sudo raspi-config
+```
+and the select 'Interface Options' and enable the i2c. Then reboot the raspi. In everything is done correcly, you should be able to see the address of the sensor by 
+
+```
+sudo i2cdetect -y 1
+```
+
+Now we have to download the packages to read the output of the sensors.
+
+### BME280
+
+
 
 ## Check the data!
 
