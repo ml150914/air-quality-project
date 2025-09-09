@@ -57,6 +57,19 @@ sudo pip install RPI.BME280
 
 You should have everything needed to read the data from the sensor. Note: it is much more easier to do that using a virtual enviroment, to buil one [follow this](https://docs.python.org/3/library/venv.html) - or [this](https://docs.conda.io/projects/conda/en/stable/user-guide/getting-started.html) if you prefer conda.
 
+## RTC - DS1307
+
+Similarly [here](https://wiki.seeedstudio.com/Pi_RTC-DS1307/) describe how to set this clock as standard hw-clock by purging the fake one present by default in the raspi.
+
+## PMS5003
+
+This [complete guide](https://www.devhour.net/monitoring-air-quality-with-a-raspberry-pi-pms5003-sensor/) will lead you to set all the necessary software for reading the PMS5003 data - the particulate matter sensor. The library PMS5003 can be obtained via
+
+```
+pip install PMS5003
+```
+
+And will automatically read and print the output of the sensor!
 
 
 ## Check the data!
