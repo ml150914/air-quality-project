@@ -48,6 +48,15 @@ Now we have to download the packages to read the output of the sensors.
 
 ### BME280
 
+Following [this guide](https://randomnerdtutorials.com/raspberry-pi-bme280-python/) we will use the RPI.BME280 library - very practical! So just running
+
+```
+sudo pip install --upgrade pip
+sudo pip install RPI.BME280
+```
+
+You should have everything needed to read the data from the sensor. Note: it is much more easier to do that using a virtual enviroment, to buil one [follow this](https://docs.python.org/3/library/venv.html) - or [this](https://docs.conda.io/projects/conda/en/stable/user-guide/getting-started.html) if you prefer conda.
+
 
 
 ## Check the data!
